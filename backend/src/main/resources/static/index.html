@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TaskFlow task management dashboard">
+    <title>TaskFlow | Focused work, visible progress</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <main class="app-shell">
+        <section id="auth-view" class="auth-layout" aria-label="Authentication">
+            <div class="auth-intro">
+                <a class="brand" href="/" aria-label="TaskFlow home"><span class="brand-mark">TF</span><span>TaskFlow</span></a>
+                <div class="intro-copy">
+                    <p class="eyebrow">A clearer way to move work forward</p>
+                    <h1>Turn the next thing into the done thing.</h1>
+                    <p class="intro-text">Keep priorities visible, deadlines honest, and progress easy to trust.</p>
+                </div>
+                <div class="signal-row" aria-label="TaskFlow qualities">
+                    <span><i class="signal-dot green"></i>Simple by default</span>
+                    <span><i class="signal-dot orange"></i>Built for momentum</span>
+                </div>
+            </div>
+            <div class="auth-panel">
+                <div class="auth-tabs" role="tablist" aria-label="Authentication options">
+                    <button class="tab-button active" type="button" data-auth-tab="login" role="tab" aria-selected="true">Sign in</button>
+                    <button class="tab-button" type="button" data-auth-tab="register" role="tab" aria-selected="false">Create account</button>
+                </div>
+                <div id="auth-message" class="message" role="status" aria-live="polite"></div>
+                <form id="login-form" class="auth-form" novalidate>
+                    <div class="form-heading"><p class="eyebrow">Welcome back</p><h2>Pick up where you left off.</h2></div>
+                    <label>Email<input type="email" name="email" autocomplete="email" required></label>
+                    <label>Password<input type="password" name="password" autocomplete="current-password" required></label>
+                    <button class="button primary full-width" type="submit">Sign in <span aria-hidden="true">&rarr;</span></button>
+                </form>
+                <form id="register-form" class="auth-form hidden" novalidate>
+                    <div class="form-heading"><p class="eyebrow">Start fresh</p><h2>Make space for better work.</h2></div>
+                    <label>Name<input type="text" name="name" autocomplete="name" maxlength="100" required></label>
+                    <label>Email<input type="email" name="email" autocomplete="email" maxlength="255" required></label>
+                    <label>Password<input type="password" name="password" autocomplete="new-password" minlength="8" maxlength="72" required><small>Use 8 to 72 characters.</small></label>
+                    <button class="button primary full-width" type="submit">Create account <span aria-hidden="true">&rarr;</span></button>
+                </form>
+                <p class="auth-footnote">Your session stays in this browser tab.</p>
+            </div>
+        </section>
+
+        <section id="dashboard-view" class="dashboard hidden" aria-label="Task dashboard">
+            <header class="topbar">
+                <a class="brand" href="/" aria-label="TaskFlow home"><span class="brand-mark">TF</span><span>TaskFlow</span></a>
+                <div class="user-menu"><div class="avatar" id="user-avatar">?</div><div class="user-copy"><strong id="user-name">User</strong><span id="user-email"></span></div><button id="logout-button" class="button ghost" type="button">Log out</button></div>
+            </header>
+            <div class="dashboard-content">
+                <div class="dashboard-heading"><div><p class="eyebrow">Your workspace</p><h1>Make progress visible.</h1><p class="subheading">A focused view of what needs your attention next.</p></div><button id="new-task-button" class="button primary" type="button"><span class="plus">+</span> New task</button></div>
+                <div id="dashboard-message" class="message" role="status" aria-live="polite"></div>
+                <div class="toolbar">
+                    <div class="toolbar-title"><span class="section-kicker">Tasks</span><span id="task-count" class="count-badge">0</span></div>
+                    <div class="filters"><label class="search-field"><span aria-hidden="true">⌕</span><input id="search-filter" type="search" placeholder="Search tasks" aria-label="Search tasks"></label><select id="status-filter" aria-label="Filter by status"><option value="">All statuses</option><option value="TODO">To do</option><option value="IN_PROGRESS">In progress</option><option value="COMPLETED">Completed</option></select><select id="priority-filter" aria-label="Filter by priority"><option value="">All priorities</option><option value="HIGH">High priority</option><option value="MEDIUM">Medium priority</option><option value="LOW">Low priority</option></select></div>
+                </div>
+                <div id="task-loading" class="loading hidden"><span class="spinner"></span> Loading your tasks...</div>
+                <div id="empty-state" class="empty-state hidden"><div class="empty-icon">◌</div><h2>No tasks here yet.</h2><p>Add the first task and give your next step a place to land.</p><button class="button secondary" type="button" id="empty-new-task">Create a task</button></div>
+                <div id="task-list" class="task-list"></div>
+                <div id="pagination" class="pagination hidden"><button id="previous-page" class="icon-button" type="button" aria-label="Previous page">&larr;</button><span id="page-label">Page 1 of 1</span><button id="next-page" class="icon-button" type="button" aria-label="Next page">&rarr;</button></div>
+            </div>
+        </section>
+    </main>
+
+    <dialog id="task-dialog" class="task-dialog">
+        <div class="dialog-header"><div><p class="eyebrow" id="dialog-eyebrow">New task</p><h2 id="dialog-title">Create a task</h2></div><button id="close-dialog" class="icon-button" type="button" aria-label="Close dialog">&times;</button></div>
+        <form id="task-form" novalidate>
+            <input type="hidden" name="id">
+            <label>Title<input type="text" name="title" maxlength="200" required></label>
+            <label>Description<textarea name="description" maxlength="2000" rows="4" placeholder="What does done look like?"></textarea></label>
+            <div class="form-grid"><label>Priority<select name="priority" required><option value="LOW">Low</option><option value="MEDIUM" selected>Medium</option><option value="HIGH">High</option></select></label><label>Status<select name="status" required><option value="TODO" selected>To do</option><option value="IN_PROGRESS">In progress</option><option value="COMPLETED">Completed</option></select></label></div>
+            <label>Due date<input type="date" name="dueDate"></label>
+            <div class="dialog-actions"><button class="button secondary" id="cancel-dialog" type="button">Cancel</button><button class="button primary" type="submit">Save task</button></div>
+        </form>
+    </dialog>
+    <script src="/app.js"></script>
+</body>
+</html>
