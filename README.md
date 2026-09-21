@@ -156,4 +156,14 @@ TaskFlow/
 
 ## Screenshots
 
-_Screenshots can be added here as the UI evolves._
+### Authentication
+
+![TaskFlow Login and Registration](docs/screenshots/Login.png)
+
+### Task Dashboard
+
+![TaskFlow Dashboard](docs/screenshots/Dashboard.png)
+
+### Task Management
+
+![TaskFlow Task Management](docs/screenshots/Tasks.png)
